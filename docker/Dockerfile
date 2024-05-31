@@ -6,7 +6,7 @@ RUN apk add --no-cache inotify-tools
 ARG user_id=1000
 ENV user_id $user_id
 
-# Create required dirs
+# Create required dirs (home required for installing hex)
 RUN mkdir -p /app /home/app_user
 RUN chown $user_id /app /home/app_user
 USER $user_id
@@ -18,3 +18,5 @@ RUN mix local.rebar --force
 
 # Set /app as workdir
 WORKDIR /app
+
+# Development container, no need to copy any source files, will be mounted.
