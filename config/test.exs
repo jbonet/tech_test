@@ -8,7 +8,7 @@ import Config
 config :ukio, Ukio.Repo,
   username: "ukio_code_test",
   password: "ukio_code_test",
-  hostname: "localhost",
+  hostname: "db",
   database: "ukio_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
