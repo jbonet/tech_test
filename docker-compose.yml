@@ -1,12 +1,28 @@
 version: "3.8"
 services:
+  api:
+    build:
+      dockerfile: docker/Dockerfile
+      context: .
+    entrypoint: docker/entrypoint.sh
+    command: mix phx.server
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./:/app
+
   db:
     image: "postgres:14"
     ports:
       - "5432:5432"
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=ukio_code_test
       - POSTGRES_PASSWORD=ukio_code_test
       - POSTGRES_DB=ukio_code_test
+
+volumes:
+  pgdata:
