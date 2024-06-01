@@ -1,21 +1,21 @@
-defmodule Ukio.ApartmentTest do
+defmodule Ukio.ConditionsTest do
   use Ukio.DataCase
 
-  alias Ukio.Apartments.Apartment
+  alias Ukio.Apartments.Conditions
 
   describe "calculate costs" do
     import Ukio.ApartmentsFixtures
 
-    test "calculate_costs/1 returns its associated costs" do
+    test "calculate/1 returns its associated costs" do
       apartment = apartment_fixture()
 
-      assert Apartment.calculate_costs(apartment) == {20_000, 100_000}
+      assert Conditions.calculate(apartment) == %Conditions{utilities: 20_000, deposit: 100_000}
     end
 
-    test "calculate_costs/1 returns mars market specific costs" do
-       apartment = apartment_fixture(%{market: "Mars", monthly_price: 45_000, square_meters: 300})
+    test "calculate/1 returns mars market specific costs" do
+      apartment = apartment_fixture(%{market: "Mars", monthly_price: 45_000, square_meters: 300})
 
-       assert Apartment.calculate_costs(apartment) == {3_000, 45_000}
+      assert Conditions.calculate(apartment) == %Conditions{utilities: 3_000, deposit: 45_000}
     end
   end
 end

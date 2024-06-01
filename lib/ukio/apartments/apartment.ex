@@ -16,17 +16,19 @@ defmodule Ukio.Apartments.Apartment do
     timestamps()
   end
 
+  @type t :: %__MODULE__{
+          address: binary,
+          monthly_price: pos_integer,
+          name: binary,
+          square_meters: pos_integer,
+          zip_code: binary,
+          market: binary
+        }
+
   @doc false
   def changeset(apartment, attrs) do
     apartment
     |> cast(attrs, [:name, :address, :zip_code, :monthly_price, :square_meters, :market])
     |> validate_required([:name, :address, :zip_code, :monthly_price, :square_meters, :market])
   end
-
-  @spec calculate_costs(map) :: {pos_integer, pos_integer}
-  def calculate_costs(%__MODULE__{market: "Mars"} = apartment) do
-    {10 * apartment.square_meters, apartment.monthly_price}
-  end
-
-  def calculate_costs(_apartment), do: {20_000, 100_000}
 end

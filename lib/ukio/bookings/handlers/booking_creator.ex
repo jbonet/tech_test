@@ -1,6 +1,6 @@
 defmodule Ukio.Bookings.Handlers.BookingCreator do
   alias Ukio.Apartments
-  alias Ukio.Apartments.Apartment
+  alias Ukio.Apartments.Conditions
   alias Ukio.Bookings
 
   def create(%{"check_in" => nil}), do: {:error, :invalid_date}
@@ -26,15 +26,15 @@ defmodule Ukio.Bookings.Handlers.BookingCreator do
   end
 
   defp generate_booking_data(apartment, check_in, check_out) do
-    {utilities, deposit} = Apartment.calculate_costs(apartment)
+    conditions = Conditions.calculate(apartment)
 
     %{
       apartment_id: apartment.id,
       check_in: check_in,
       check_out: check_out,
       monthly_rent: apartment.monthly_price,
-      utilities: utilities,
-      deposit: deposit
+      utilities: conditions.utilities,
+      deposit: conditions.deposit
     }
   end
 end
