@@ -15,6 +15,20 @@ You should already have the project up and running. You could run the tests to c
 
 > mix test
 
+### Docker
+
+This project is now fully dockerized. Can anything can be run without a local elixir installation. The project is configured to work in both, local and docker modes.
+
+Every action is contained in a Makefile.
+
+Available actions are:
+
+- setup
+- start 
+- stop
+- test
+
+if make is not available in your system, running the docker commands manually would also work
 
 ## Coding test
 After putting our first API MVP online, we're ready to face a second iteration, and here is where we need your help. Right now, our API is capable of handling simple bookings, but we're expanding, and we want to be able to rent our apartments in more cities. Let's go into detail to our models, API, and requirements for those new markets

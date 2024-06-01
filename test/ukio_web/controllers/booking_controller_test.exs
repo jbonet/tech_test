@@ -45,12 +45,24 @@ defmodule UkioWeb.BookingControllerTest do
     test "renders errors when data is invalid", %{conn: conn, apartment: apartment} do
       b = Map.merge(@invalid_attrs, %{apartment_id: apartment.id})
       conn = post(conn, ~p"/api/bookings", booking: b)
-      assert json_response(conn, 422)["errors"] != %{}
+      assert json_response(conn, 400)["errors"] == %{"detail" => "Invalid params"}
     end
-  end
 
-  defp create_booking(_) do
-    booking = booking_fixture()
-    %{booking: booking}
+    test "renders errors when apartment is already booked", %{conn: conn} do
+      %{apartment_id: apartment_id} =
+        booking_fixture(%{check_in: ~D[2024-05-26], check_out: ~D[2024-06-26]})
+
+      booking_params = %{
+        "check_in" => ~D[2024-05-30],
+        "check_out" => ~D[2023-06-29],
+        "apartment_id" => apartment_id
+      }
+
+      conn = post(conn, ~p"/api/bookings", booking: booking_params)
+
+      assert json_response(conn, 401)["errors"] == %{
+               "detail" => "Apartment not available to book in the specified dates"
+             }
+    end
   end
 end

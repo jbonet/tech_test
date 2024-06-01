@@ -15,7 +15,8 @@ defmodule Ukio.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Ukio.PubSub},
       # Start Finch
-      {Finch, name: Ukio.Finch},
+      # Not really needed for our application at the moment, we are not doing any http calls.
+      # {Finch, name: Ukio.Finch},
       # Start the Endpoint (http/https)
       UkioWeb.Endpoint
       # Start a worker by calling: Ukio.Worker.start_link(arg)

@@ -32,11 +32,13 @@ defmodule Ukio.ApartmentsTest do
         monthly_price: 42,
         name: "some name",
         square_meters: 42,
-        zip_code: "some zip_code"
+        zip_code: "some zip_code",
+        market: "some market"
       }
 
       assert {:ok, %Apartment{} = apartment} = Apartments.create_apartment(valid_attrs)
       assert apartment.address == "some address"
+      assert apartment.market == "some market"
       assert apartment.monthly_price == 42
       assert apartment.name == "some name"
       assert apartment.square_meters == 42

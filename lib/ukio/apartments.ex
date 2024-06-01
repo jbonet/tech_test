@@ -101,4 +101,27 @@ defmodule Ukio.Apartments do
   def change_apartment(%Apartment{} = apartment, attrs \\ %{}) do
     Apartment.changeset(apartment, attrs)
   end
+
+  @doc """
+  Returns a boolean with the apartment availability
+
+  ## Examples
+      iex> available?(apartment, ~D[2024-05-20], ~D[2024-07-20])
+      true
+
+  """
+  @spec available?(map, Date.t(), Date.t()) :: boolean
+  def available?(%Apartment{} = apartment, check_in, check_out) do
+    query =
+      from(
+        b in Ukio.Bookings.Booking,
+        where:
+          b.apartment_id == ^apartment.id and
+            ((b.check_in <= ^check_in and b.check_out > ^check_in) or
+               (b.check_in < ^check_out and b.check_out >= ^check_out) or
+               (b.check_in >= ^check_in and b.check_out <= ^check_out))
+      )
+
+    !Repo.exists?(query)
+  end
 end

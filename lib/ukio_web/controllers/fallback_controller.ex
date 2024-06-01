@@ -6,6 +6,12 @@ defmodule UkioWeb.FallbackController do
   """
   use UkioWeb, :controller
 
+  @errors %{
+    not_found: {404, "Resource not found"},
+    unavailable: {401, "Apartment not available to book in the specified dates"},
+    validation: {400, "Invalid params"}
+  }
+
   # This clause handles errors returned by Ecto's insert/update/delete.
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
@@ -14,11 +20,18 @@ defmodule UkioWeb.FallbackController do
     |> render(:error, changeset: changeset)
   end
 
-  # This clause is an example of how to handle resources that cannot be found.
-  def call(conn, {:error, :not_found}) do
+  # This clause handles custom errors.
+  def call(conn, {:error, error}) do
+    {status, message} = Map.get(@errors, error, {400, "Unknown error"})
+    render_error(conn, status, message)
+  end
+
+  defp render_error(conn, status, message) do
+    details = %{custom_message: message}
+
     conn
-    |> put_status(:not_found)
+    |> put_status(status)
     |> put_view(html: UkioWeb.ErrorHTML, json: UkioWeb.ErrorJSON)
-    |> render(:"404")
+    |> render(:"#{status}", details)
   end
 end

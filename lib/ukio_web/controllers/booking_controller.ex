@@ -8,10 +8,15 @@ defmodule UkioWeb.BookingController do
   action_fallback UkioWeb.FallbackController
 
   def create(conn, %{"booking" => booking_params}) do
+    # The controller should validate params and reject invalid requests.
+    # For convenience in this exercise, I am delegating this to the handler.
     with {:ok, %Booking{} = booking} <- BookingCreator.create(booking_params) do
       conn
       |> put_status(:created)
       |> render(:show, booking: booking)
+    else
+      {:error, :invalid_date} -> {:error, :validation}
+      e -> e
     end
   end
 

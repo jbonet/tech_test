@@ -6,6 +6,9 @@ services:
       context: .
     entrypoint: docker/entrypoint.sh
     command: mix phx.server
+    environment:
+      - MIX_ENV=dev
+      - DEV_CONTAINER=1
     depends_on:
       - db
     ports:

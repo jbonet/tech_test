@@ -20,6 +20,12 @@ if System.get_env("PHX_SERVER") do
   config :ukio, UkioWeb.Endpoint, server: true
 end
 
+if System.get_env("DEV_CONTAINER") do
+  config :ukio, Ukio.Repo, hostname: "db"
+
+  config :ukio, UkioWeb.Endpoint, http: [ip: {0, 0, 0, 0}, port: 4000]
+end
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

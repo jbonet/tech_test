@@ -5,8 +5,9 @@ defmodule Ukio.BookingsTest do
 
   describe "bookings" do
     alias Ukio.Bookings.Booking
+    alias Ukio.Bookings.Handlers.BookingCreator
 
-    import Ukio.ApartmentsFixtures, only: [apartment_fixture: 0]
+    import Ukio.ApartmentsFixtures
     import Ukio.BookingsFixtures
 
     @invalid_attrs %{
@@ -82,6 +83,33 @@ defmodule Ukio.BookingsTest do
     test "change_booking/1 returns a booking changeset" do
       booking = booking_fixture()
       assert %Ecto.Changeset{} = Bookings.change_booking(booking)
+    end
+
+    test "booking an apartment from 'Mars' has specific rates" do
+      apartment = apartment_fixture(%{market: "Mars", monthly_price: 250_000, square_meters: 60})
+
+      booking_params = %{
+        "check_in" => ~D[2023-03-26],
+        "check_out" => ~D[2023-03-27],
+        "apartment_id" => apartment.id
+      }
+
+      {:ok, booking} = BookingCreator.create(booking_params)
+
+      assert booking.deposit == 250_000
+      assert booking.utilities == 600
+    end
+
+    test "booking an already booked apartment should fail" do
+      booking = booking_fixture(%{check_in: ~D[2024-05-26], check_out: ~D[2024-06-26]})
+
+      booking_params = %{
+        "check_in" => ~D[2024-05-30],
+        "check_out" => ~D[2023-06-29],
+        "apartment_id" => booking.apartment_id
+      }
+
+      assert {:error, :unavailable} = BookingCreator.create(booking_params)
     end
   end
 end
